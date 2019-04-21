@@ -27,7 +27,6 @@ export class CompareService {
       if (err) {
         return;
       }
-
       this.http.post('https://gua6jja511.execute-api.us-east-1.amazonaws.com/dev/compare-yourself', data, {
         headers: new Headers({ 'Authorization': session.getIdToken().getJwtToken() })
       })
@@ -84,14 +83,16 @@ export class CompareService {
 
   onDeleteData() {
     this.dataLoadFailed.next(false);
-    this.http.delete('https://API_ID.execute-api.REGION.amazonaws.com/dev/', {
-      headers: new Headers({ 'Authorization': 'XXX' })
-    })
-      .subscribe(
-        (data) => {
-          console.log(data);
-        },
-        (error) => this.dataLoadFailed.next(true)
-      );
+    this.authService.getAuthenticatedUser().getSession((err, session) => {
+      this.http.delete('https://gua6jja511.execute-api.us-east-1.amazonaws.com/dev/compare-yourself', {
+        headers: new Headers({ 'Authorization': session.getIdToken().getJwtToken() })
+      })
+        .subscribe(
+          (data) => {
+            console.log(data);
+          },
+          (error) => this.dataLoadFailed.next(true)
+        );
+    });
   }
 }
