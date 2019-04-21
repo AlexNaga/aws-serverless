@@ -15,7 +15,7 @@ export class CompareService {
   dataLoadFailed = new Subject<boolean>();
   userData: CompareData;
   constructor(private http: Http,
-              private authService: AuthService) {
+    private authService: AuthService) {
   }
 
   onStoreData(data: CompareData) {
@@ -23,8 +23,13 @@ export class CompareService {
     this.dataIsLoading.next(true);
     this.dataEdited.next(false);
     this.userData = data;
-      this.http.post('https://API_ID.execute-api.REGION.amazonaws.com/dev/', data, {
-        headers: new Headers({'Authorization': 'XX'})
+    this.authService.getAuthenticatedUser().getSession((err, session) => {
+      if (err) {
+        return;
+      }
+
+      this.http.post('https://gua6jja511.execute-api.us-east-1.amazonaws.com/dev/compare-yourself', data, {
+        headers: new Headers({ 'Authorization': session.getIdToken().getJwtToken() })
       })
         .subscribe(
           (result) => {
@@ -38,17 +43,20 @@ export class CompareService {
             this.dataEdited.next(false);
           }
         );
+    });
   }
+
   onRetrieveData(all = true) {
     this.dataLoaded.next(null);
     this.dataLoadFailed.next(false);
-      let queryParam = '';
+    this.authService.getAuthenticatedUser().getSession((err, session) => {
+      const queryParam = '?accessToken=' + session.getAccessToken().getJwtToken();
       let urlParam = 'all';
       if (!all) {
         urlParam = 'single';
       }
-      this.http.get('https://API_ID.execute-api.REGION.amazonaws.com/dev/' + urlParam + queryParam, {
-        headers: new Headers({'Authorization': 'XXX'})
+      this.http.get('https://gua6jja511.execute-api.us-east-1.amazonaws.com/dev/compare-yourself/' + urlParam + queryParam, {
+        headers: new Headers({ 'Authorization': session.getIdToken().getJwtToken() })
       })
         .map(
           (response: Response) => response.json()
@@ -58,7 +66,6 @@ export class CompareService {
             if (all) {
               this.dataLoaded.next(data);
             } else {
-              console.log(data);
               if (!data) {
                 this.dataLoadFailed.next(true);
                 return;
@@ -72,17 +79,19 @@ export class CompareService {
             this.dataLoaded.next(null);
           }
         );
+    });
   }
+
   onDeleteData() {
     this.dataLoadFailed.next(false);
-      this.http.delete('https://API_ID.execute-api.REGION.amazonaws.com/dev/', {
-        headers: new Headers({'Authorization': 'XXX'})
-      })
-        .subscribe(
-          (data) => {
-            console.log(data);
-          },
-          (error) => this.dataLoadFailed.next(true)
-        );
+    this.http.delete('https://API_ID.execute-api.REGION.amazonaws.com/dev/', {
+      headers: new Headers({ 'Authorization': 'XXX' })
+    })
+      .subscribe(
+        (data) => {
+          console.log(data);
+        },
+        (error) => this.dataLoadFailed.next(true)
+      );
   }
 }
