@@ -1,3 +1,4 @@
+<!-- Navbar -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -6,13 +7,17 @@
     <div class="navbar-default">
       <ul class="nav navbar-nav">
         <li *ngIf="isAuthenticated" routerLinkActive="active"><a routerLink="/compare">Compare</a></li>
-        <li *ngIf="isAuthenticated" routerLinkActive="active"><a (click)="onLogout()" style="cursor: pointer;">Logout</a></li>
-        <li *ngIf="!isAuthenticated" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a routerLink="/">Sign In</a></li>
+        <li *ngIf="isAuthenticated" routerLinkActive="active"><a (click)="onLogout()"
+            style="cursor: pointer;">Logout</a></li>
+        <li *ngIf="!isAuthenticated" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a
+            routerLink="/">Sign In</a></li>
         <li *ngIf="!isAuthenticated" routerLinkActive="active"><a routerLink="/signup">Sign Up</a></li>
       </ul>
     </div>
   </div>
 </nav>
+
+<!-- Content -->
 <div class="container">
   <div class="row">
     <div class="col-xs-12">
@@ -20,3 +25,13 @@
     </div>
   </div>
 </div>
+
+<hr>
+
+<!-- Footer -->
+<footer class="page-footer font-small fixed-bottom">
+  <div class="footer-copyright text-center py-3">Source code available at
+    <a href="https://github.com/AlexNaga/aws-serverless">GitHub</a>
+    <p><span class="ui small text">Alex Naga, 2019</span></p>
+  </div>
+</footer>
